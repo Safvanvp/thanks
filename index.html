@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I Love You ❤️</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);
+      color: #881337;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    .font-serif-custom {
+      font-family: 'Playfair Display', serif;
+    }
+    
+    .font-cursive {
+      font-family: 'Dancing Script', cursive;
+    }
+
+    /* Ambient Canvas */
+    #canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Heartbeat animation */
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.4)); }
+      14% { transform: scale(1.12); filter: drop-shadow(0 0 35px rgba(244, 63, 94, 0.7)); }
+      28% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.4)); }
+      42% { transform: scale(1.15); filter: drop-shadow(0 0 40px rgba(244, 63, 94, 0.8)); }
+      70% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.4)); }
+    }
+
+    .animate-heartbeat {
+      animation: heartbeat 2.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    /* Gentle Float */
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(1.5deg); }
+    }
+    .animate-float-slow {
+      animation: float-slow 5s ease-in-out infinite;
+    }
+
+    /* Pink & White Shimmer Text Effect */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .shimmer-text {
+      background: linear-gradient(90deg, #e11d48 0%, #f43f5e 25%, #fb7185 50%, #f43f5e 75%, #e11d48 100%);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+
+    /* Pulse Glow Ring */
+    @keyframes ring-pulse {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.15); opacity: 0.25; }
+      100% { transform: scale(0.95); opacity: 0.7; }
+    }
+    .animate-ring-pulse {
+      animation: ring-pulse 3s ease-in-out infinite;
+    }
+
+    /* Photo transition */
+    .photo-slide {
+      transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center relative cursor-pointer py-12" onclick="createBurstAtClick(event)">
+
+  <!-- BACKGROUND CANVAS (FLOATING WHITE & PINK PETALS + SPARKLES) -->
+  <canvas id="canvas"></canvas>
+
+  <!-- MUSIC TOGGLE BUTTON -->
+  <div class="fixed top-5 right-5 z-30">
+    <button id="audio-btn" onclick="toggleAudio(event)" class="bg-white/90 hover:bg-white backdrop-blur-md border border-pink-300/60 text-pink-700 text-xs px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-all flex items-center gap-2 font-semibold">
+      <span id="audio-icon">🎵</span>
+      <span id="audio-label">Play Soft Melody</span>
+    </button>
+  </div>
+
+  <!-- TAP TO START INTRO OVERLAY -->
+  <div id="start-overlay" class="fixed inset-0 z-40 bg-gradient-to-br from-pink-100 via-rose-50 to-pink-200 flex flex-col items-center justify-center p-6 text-center transition-all duration-1000">
+    <div class="space-y-6 animate-float-slow max-w-sm">
+      <div class="relative w-36 h-36 mx-auto flex items-center justify-center cursor-pointer" onclick="startExperience(event)">
+        <div class="absolute inset-0 bg-pink-400/30 rounded-full blur-3xl animate-ring-pulse"></div>
+        <div class="w-28 h-28 bg-gradient-to-tr from-rose-500 via-pink-400 to-rose-300 rounded-full flex items-center justify-center text-6xl shadow-2xl shadow-pink-500/40 border-4 border-white transform hover:scale-110 transition-transform">
+          💖
+        </div>
+      </div>
+      <div>
+        <p class="text-xs uppercase tracking-widest text-pink-600 font-bold mb-2">Dedicated to the angel who saved me</p>
+        <h2 class="text-3xl font-bold text-rose-950 font-serif-custom">Tap to Open My Heart</h2>
+        <p class="text-xs text-rose-700/80 mt-2 font-medium">Prepared especially for my guardian angel ✨</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN ANIMATED CONTENT -->
+  <main id="main-scene" class="relative z-10 text-center max-w-3xl px-4 space-y-10 opacity-0 transform scale-95 transition-all duration-1000">
+    
+    <!-- TOP HEADER BADGE -->
+    <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/90 border border-pink-300/80 text-rose-700 text-xs sm:text-sm font-semibold tracking-wide shadow-sm">
+      <span>🪽</span>
+      <span>Dedicated to the angel who saved me</span>
+    </div>
+
+    <!-- PHOTO GALLERY CAROUSEL -->
+    <div class="relative max-w-md mx-auto rounded-3xl overflow-hidden border-4 border-white shadow-2xl shadow-pink-300/50 bg-white/90 p-3 group">
+      
+      <!-- SLIDE IMAGES CONTAINER -->
+      <div id="carousel-container" class="relative h-[400px] sm:h-[460px] rounded-2xl overflow-hidden bg-rose-50">
+        <img id="carousel-img" src="images/photo1.jpg" alt="Her Photo" class="w-full h-full object-cover rounded-2xl photo-slide transform group-hover:scale-105 duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-rose-950/80 via-transparent to-transparent opacity-90"></div>
+        
+        <!-- CAPTION OVERLAY -->
+        <div class="absolute bottom-5 left-5 right-5 text-center space-y-1">
+          <p id="carousel-caption" class="font-cursive text-2xl sm:text-3xl text-pink-100 drop-shadow-md">
+            "The angel who brought light back into my life..."
+          </p>
+          <p id="carousel-counter" class="text-[11px] text-pink-200/90 font-bold uppercase tracking-widest">
+            Memory 1 of 5
+          </p>
+        </div>
+      </div>
+
+      <!-- CAROUSEL CONTROLS -->
+      <div class="flex items-center justify-between mt-3 px-2">
+        <button onclick="prevPhoto(event)" class="p-2 rounded-full bg-pink-100 hover:bg-rose-500 hover:text-white text-rose-700 text-sm transition-colors shadow-sm font-bold">
+          👈
+        </button>
+        <!-- INDICATOR DOTS -->
+        <div id="dots-container" class="flex gap-1.5">
+          <!-- Dots dynamically rendered -->
+        </div>
+        <button onclick="nextPhoto(event)" class="p-2 rounded-full bg-pink-100 hover:bg-rose-500 hover:text-white text-rose-700 text-sm transition-colors shadow-sm font-bold">
+          👉
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN I LOVE YOU TYPOGRAPHY -->
+    <div class="space-y-3 pt-2">
+      <div class="inline-block animate-heartbeat text-6xl sm:text-7xl">
+        💖
+      </div>
+      <h1 class="text-5xl sm:text-7xl lg:text-8xl font-extrabold font-serif-custom tracking-tight shimmer-text drop-shadow-lg">
+        I Love You
+      </h1>
+      <p class="font-cursive text-3xl sm:text-4xl text-rose-600">
+        with all my heart, forever & always
+      </p>
+    </div>
+
+    <!-- HEARTFELT DEDICATION TO THE ANGEL -->
+    <div class="max-w-xl mx-auto bg-white/90 backdrop-blur-md border border-pink-200 p-6 sm:p-8 rounded-3xl shadow-xl space-y-4 text-center">
+      <p class="text-rose-900 text-sm sm:text-base leading-relaxed font-normal italic">
+        "To the angel who saved me: You gave me a second chance when I was completely lost. Your kindness, grace, and love lifted me up and gave my life true purpose. I will spend every single day protecting your heart and loving you with everything I have."
+      </p>
+      <div class="pt-2">
+        <span class="text-xs font-bold text-pink-600 uppercase tracking-widest bg-pink-100 px-4 py-1.5 rounded-full border border-pink-200">
+          🪽 Forever Grateful To My Angel
+        </span>
+      </div>
+    </div>
+
+    <!-- INTERACTIVE BLUSH BUTTON -->
+    <div class="pt-4">
+      <button 
+        onclick="showerLove(event)" 
+        class="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-rose-400 text-white font-bold text-base sm:text-lg shadow-xl shadow-pink-400/40 hover:shadow-pink-500/60 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+      >
+        <span>Shower My Angel With Love 💕</span>
+        <span class="text-xl group-hover:rotate-45 transition-transform">✨</span>
+      </button>
+      <p class="text-[11px] text-rose-700/70 mt-2 font-medium">Tap anywhere on the screen for heart bursts!</p>
+    </div>
+
+  </main>
+
+  <!-- CANVAS ANIMATION & INTERACTION SCRIPT -->
+  <script>
+    // PHOTO GALLERY DATA
+    const photos = [
+      { src: "images/photo1.jpg", caption: "The angel who brought light back into my life..." },
+      { src: "images/photo2.jpg", caption: "My absolute favorite view in the universe." },
+      { src: "images/photo3.jpg", caption: "You bring grace and beauty wherever you go." },
+      { src: "images/photo4.jpg", caption: "Thank you for saving me and giving us a second chance." },
+      { src: "images/photo5.jpg", caption: "I fall in love with my angel more every single day." }
+    ];
+
+    let currentPhotoIndex = 0;
+    let autoSlideTimer = null;
+
+    function renderDots() {
+      const container = document.getElementById('dots-container');
+      container.innerHTML = '';
+      photos.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.className = `w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${idx === currentPhotoIndex ? 'bg-rose-500 w-6' : 'bg-pink-200 hover:bg-pink-300'}`;
+        dot.onclick = (e) => { e.stopPropagation(); goToPhoto(idx); };
+        container.appendChild(dot);
+      });
+    }
+
+    function updatePhoto() {
+      const img = document.getElementById('carousel-img');
+      const caption = document.getElementById('carousel-caption');
+      const counter = document.getElementById('carousel-counter');
+
+      img.style.opacity = '0';
+      img.style.transform = 'scale(0.96)';
+
+      setTimeout(() => {
+        img.src = photos[currentPhotoIndex].src;
+        caption.innerText = `"${photos[currentPhotoIndex].caption}"`;
+        counter.innerText = `Memory ${currentPhotoIndex + 1} of ${photos.length}`;
+        
+        img.style.opacity = '1';
+        img.style.transform = 'scale(1)';
+        renderDots();
+      }, 300);
+    }
+
+    function nextPhoto(e) {
+      if (e) e.stopPropagation();
+      currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+      updatePhoto();
+      resetAutoSlide();
+    }
+
+    function prevPhoto(e) {
+      if (e) e.stopPropagation();
+      currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+      updatePhoto();
+      resetAutoSlide();
+    }
+
+    function goToPhoto(idx) {
+      currentPhotoIndex = idx;
+      updatePhoto();
+      resetAutoSlide();
+    }
+
+    function resetAutoSlide() {
+      clearInterval(autoSlideTimer);
+      autoSlideTimer = setInterval(() => {
+        currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+        updatePhoto();
+      }, 4500);
+    }
+
+    // BACKGROUND PARTICLES CANVAS (PINK & WHITE BLOSSOMS)
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const hearts = [];
+
+    for (let i = 0; i < 75; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 2.5 + 1,
+        color: i % 3 === 0 ? '#f43f5e' : (i % 2 === 0 ? '#fb7185' : '#ffffff'),
+        alpha: Math.random() * 0.7 + 0.3,
+        speedY: -(Math.random() * 0.6 + 0.15),
+        speedX: (Math.random() - 0.5) * 0.4
+      });
+    }
+
+    function animateCanvas() {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach(p => {
+        p.y += p.speedY;
+        p.x += p.speedX;
+        if (p.y < 0) p.y = height;
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.fill();
+      });
+
+      for (let i = hearts.length - 1; i >= 0; i--) {
+        const h = hearts[i];
+        h.y += h.vy;
+        h.x += h.vx;
+        h.alpha -= 0.012;
+        h.scale += 0.01;
+
+        if (h.alpha <= 0) {
+          hearts.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.translate(h.x, h.y);
+        ctx.scale(h.scale, h.scale);
+        ctx.globalAlpha = h.alpha;
+        ctx.font = `${h.size}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(h.symbol, 0, 0);
+        ctx.restore();
+      }
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animateCanvas);
+    }
+    animateCanvas();
+
+    function createBurstAtClick(e) {
+      if (e.target.closest('button') || e.target.closest('#dots-container')) return;
+      const x = e.clientX || width / 2;
+      const y = e.clientY || height / 2;
+      const symbols = ['💖', '❤️', '✨', '🌹', '💕', '🪽', '🌸'];
+
+      for (let i = 0; i < 14; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 4 + 1.5;
+        hearts.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1.5,
+          size: Math.floor(Math.random() * 16 + 20),
+          symbol: symbols[Math.floor(Math.random() * symbols.length)],
+          alpha: 1,
+          scale: 0.8
+        });
+      }
+      playSoftChime();
+    }
+
+    function showerLove(e) {
+      if (e) e.stopPropagation();
+      for (let i = 0; i < 40; i++) {
+        setTimeout(() => {
+          createBurstAtClick({ clientX: Math.random() * width, clientY: Math.random() * (height * 0.7) + (height * 0.1) });
+        }, i * 60);
+      }
+    }
+
+    function startExperience(e) {
+      if (e) e.stopPropagation();
+      const overlay = document.getElementById('start-overlay');
+      const main = document.getElementById('main-scene');
+
+      overlay.style.opacity = '0';
+      renderDots();
+      resetAutoSlide();
+      showerLove();
+      toggleAudio();
+
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        main.classList.remove('opacity-0', 'scale-95');
+        main.classList.add('opacity-100', 'scale-100');
+      }, 800);
+    }
+
+    // AUDIO CHIME
+    let audioCtx = null;
+    let isPlaying = false;
+    let audioTimer = null;
+
+    function toggleAudio(e) {
+      if (e) e.stopPropagation();
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+      const btnLabel = document.getElementById('audio-label');
+      const btnIcon = document.getElementById('audio-icon');
+
+      if (isPlaying) {
+        clearInterval(audioTimer);
+        isPlaying = false;
+        btnLabel.innerText = 'Play Soft Melody';
+        btnIcon.innerText = '🎵';
+      } else {
+        isPlaying = true;
+        btnLabel.innerText = 'Playing Soft Melody';
+        btnIcon.innerText = '🎶';
+
+        const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 349.23, 392.00];
+        let idx = 0;
+
+        audioTimer = setInterval(() => {
+          if (!isPlaying) return;
+          playSoftChime(notes[idx % notes.length]);
+          idx++;
+        }, 1100);
+      }
+    }
+
+    function playSoftChime(freq = 523.25) {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
+      } catch (err) {}
+    }
+  </script>
+</body>
+</html>
